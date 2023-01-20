@@ -37,6 +37,7 @@ app.post('/webhooks', express.raw({type: 'application/json'}), async (req, res) 
             break;
         case "checkout.session.completed":
             result = await updatePaymentMethod(req);
+            break;
         default:
             return res.status(200).send("Invalid Event Detected");
     }
