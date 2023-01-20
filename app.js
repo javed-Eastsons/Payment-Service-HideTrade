@@ -7,8 +7,6 @@ const stripe = require('stripe')('sk_test_51MMu5kLt3bt57eoNf5hXuaIKsIjrIqGHkeEUN
 
 const axios = require("axios");
 
-const webhookSecret = "we_1MSNBJLt3bt57eoNk5HyicbO";
-
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -28,21 +26,6 @@ app.get("/", (_req, res) => {
 
 app.post('/webhooks', express.raw({type: 'application/json'}), async (req, res) => {
     let event = req.body;
-
-    if (webhookSecret) {
-        // Get the signature sent by Stripe
-        const signature = req.headers['stripe-signature'];
-        try {
-          event = stripe.webhooks.constructEvent(
-            req.body,
-            signature,
-            endpointSecret
-          );
-        } catch (err) {
-          console.log(`⚠️  Webhook signature verification failed.`, err.message);
-          return response.sendStatus(400);
-        }
-      }
 
     console.log(event.type);
 
