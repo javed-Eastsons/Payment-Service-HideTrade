@@ -29,15 +29,24 @@ app.post('/webhooks', express.raw({type: 'application/json'}), async (req, res) 
 
     console.log(event.type);
 
+    let result;
+
     switch (event.type) {
         case "invoice.paid":
-            await subscription_created(req);
+            result =  await subscription_created(req);
             break;
         case "checkout.session.completed":
-            await updatePaymentMethod(req);
+            result = await updatePaymentMethod(req);
         default:
-            res.status(400).end();
+            return res.status(200).send("Invalid Event Detected");
     }
+
+    if (res.status === 400) {
+        return res.status(400).send(result);
+    }
+
+    return res.status(200).send(result);
+    
 });
 
 app.post("/create-subscription", async (req, res) => {
@@ -150,78 +159,94 @@ app.post("/checkout-session", async (req, res) => {
 });
 
 const subscription_created = async (req) => {
-    const cid = req.body.data.object.customer;
 
-    const responseOfCid = await stripe.customers.retrieve(cid);
-    const userId = responseOfCid.name;
+    try {
+        const cid = req.body.data.object.customer;
 
-    const subscription = await stripe.subscriptions.list({
-        limit : 1,
-        customer : cid
-    });
+        const responseOfCid = await stripe.customers.retrieve(cid);
+        const userId = responseOfCid.name;
 
-    const subId = subscription.data[0].id;
-    const endTimeStamp = subscription.data[0].current_period_end;
-    const status = subscription.data[0].status;
+        const subscription = await stripe.subscriptions.list({
+            limit : 1,
+            customer : cid
+        });
 
-    console.log("Sub Id : " + subId);
-    console.log("End Time Stamp : " + endTimeStamp);
+        const subId = subscription.data[0].id;
+        const endTimeStamp = subscription.data[0].current_period_end;
+        const status = subscription.data[0].status;
 
-    console.log(status)
+        console.log("Sub Id : " + subId);
+        console.log("End Time Stamp : " + endTimeStamp);
 
-    // update into the api
+        console.log(status)
 
-    if (status === "active") {
-        console.log("updating into database");
+        // update into the api
 
-        const params = new URLSearchParams();
+        if (status === "active") {
+            console.log("updating into database");
 
-        params.append('user_id', userId);
-        params.append('subscription_id', subId);
-        params.append('customer_id', cid);
-        params.append('timestamp', endTimeStamp);
-    
-        let url = "https://refuel.site/projects/hidetrade/APIs/UpdateProfile/UpdateProfileWithSubscription.php";
-    
-        axios.post(url, params).then((result) => {
-            console.log(result);
-            console.log(result.data);
-        }).catch((err) => {
-            console.log(err);
-        })
+            const params = new URLSearchParams();
+
+            params.append('user_id', userId);
+            params.append('subscription_id', subId);
+            params.append('customer_id', cid);
+            params.append('timestamp', endTimeStamp);
+        
+            let url = "https://refuel.site/projects/hidetrade/APIs/UpdateProfile/UpdateProfileWithSubscription.php";
+        
+            axios.post(url, params).then((result) => {
+                console.log(result);
+                console.log(result.data);
+            }).catch((err) => {
+                console.log(err);
+                return { status : 400, error : err };
+            });
+
+            return { status : 200, message : "All Good" };
+        }
+    } catch(errr) {
+        console.log(errr);
+        return { status : 400, error : errr };
     }
 };
 
 const updatePaymentMethod = async (req) => {
-    const setupIntentId = req.body.data.object.setup_intent;
-    console.log(setupIntentId);
+    try {
+        const setupIntentId = req.body.data.object.setup_intent;
+        console.log(setupIntentId);
 
-    const setupIntent = await stripe.setupIntents.retrieve(setupIntentId);
+        const setupIntent = await stripe.setupIntents.retrieve(setupIntentId);
 
-    const cusId = setupIntent.customer;
-    const subId = setupIntent.metadata.subscription_id;
-    const payId = setupIntent.payment_method;
+        const cusId = setupIntent.customer;
+        const subId = setupIntent.metadata.subscription_id;
+        const payId = setupIntent.payment_method;
 
-    console.log(cusId);
-    console.log(subId);
-    console.log(payId);
+        console.log(cusId);
+        console.log(subId);
+        console.log(payId);
 
-    console.log("upadting the customer default method : ");
+        console.log("upadting the customer default method : ");
 
-    const customer = await stripe.customers.update(
-        cusId,
-        {invoice_settings: {default_payment_method: payId}}
-    );
+        const customer = await stripe.customers.update(
+            cusId,
+            {invoice_settings: {default_payment_method: payId}}
+        );
 
-    console.log(customer);
+        console.log(customer);
 
-    console.log("updating the subscription");
+        console.log("updating the subscription");
 
-    const subscription = await stripe.subscriptions.update(subId, {
-        default_payment_method: payId,
-    });
+        const subscription = await stripe.subscriptions.update(subId, {
+            default_payment_method: payId,
+        });
 
-    console.log(subscription);
+        console.log(subscription);
+
+        return { status : 200, message : "All Good" };
+
+    } catch(error) {
+        return { status : 400, error : error };
+    }
 }
 
 // handle the error safely
