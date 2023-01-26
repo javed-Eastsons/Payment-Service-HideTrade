@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 
-const stripe = require('stripe')('sk_test_51MMu5kLt3bt57eoNf5hXuaIKsIjrIqGHkeEUNagFlQDm4p1LcxXOc9hkbDsjQVlyitl0UjzxwrYzAiz846KBeURE00tBwSYqxc');
+const stripe = require('stripe')('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');
 
 const axios = require("axios");
 
@@ -70,7 +70,7 @@ app.post("/create-subscription", async (req, res) => {
         cid = customers.data[0].id;
     }
 
-    const priceId = "price_1MQn2zLt3bt57eoN62NEtelM";
+    const priceId = "price_1MUTgMLt3bt57eoNzHjeTyOF";
 
     try {
         const subscription = await stripe.subscriptions.create({
