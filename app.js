@@ -70,6 +70,13 @@ app.post("/create-subscription", async (req, res) => {
         cid = customers.data[0].id;
     }
 
+    const ephemeralKey = await stripe.ephemeralKeys.create(
+        {customer: cid},
+        {apiVersion: '2022-11-15'}
+    );
+
+    console.log(ephemeralKey);
+
     const priceId = "price_1MUTgMLt3bt57eoNzHjeTyOF";
 
     try {
@@ -88,7 +95,8 @@ app.post("/create-subscription", async (req, res) => {
         res.send({
           subscriptionId: subscription.id,
           clientSecret: subscription.latest_invoice.payment_intent.client_secret,
-          customerId : cid
+          customerId : cid,
+          key : ephemeralKey
         });
     } catch (error) {
         return res.status(400).send({ error: { message: error.message } });
