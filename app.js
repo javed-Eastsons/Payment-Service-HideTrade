@@ -96,7 +96,7 @@ app.post("/create-subscription", async (req, res) => {
           subscriptionId: subscription.id,
           clientSecret: subscription.latest_invoice.payment_intent.client_secret,
           customerId : cid,
-          key : ephemeralKey
+          key : ephemeralKey.secret
         });
     } catch (error) {
         return res.status(400).send({ error: { message: error.message } });
