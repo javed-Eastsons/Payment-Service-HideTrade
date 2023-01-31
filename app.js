@@ -82,6 +82,8 @@ app.post("/create-subscription", async (req, res) => {
           payment_settings: { save_default_payment_method: 'on_subscription' },
           expand: ['latest_invoice.payment_intent'],
         });
+
+        console.log(subscription.latest_invoice.payment_intent.client_secret);
     
         res.send({
           subscriptionId: subscription.id,
