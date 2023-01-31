@@ -252,7 +252,6 @@ const updatePaymentMethod = async (req) => {
 
 // handle the error safely
 process.on("uncaughtException", (err) => {
-    console.log(req);
 	console.log(err);
 });
 
