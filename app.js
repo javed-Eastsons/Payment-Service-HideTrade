@@ -73,7 +73,7 @@ app.post("/create-subscription", async (req, res) => {
     const priceId = "price_1NQ5XNLt3bt57eoNugvsVOz9";
 
     try {
-        const subscription = await stripe.subscriptions.create({
+        const subscription = await stripe.paymentIntents.create({
           customer: cid,
           items: [{
             price: priceId,
