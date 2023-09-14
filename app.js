@@ -23,8 +23,9 @@ app.get("/", (_req, res) => {
 	console.log("checked");
 	res.status(200).json({ message: "Hello There!! You are at Backend" });
 });
+app.use(express.urlencoded({ extended: true })); // Middleware to parse form data
 
-app.post('/webhooks', express.raw({type: 'application/json'}), async (req, res) => {
+app.post('/webhooks', async (req, res) => {
     let event = req.body;
 
     console.log(event.type);
