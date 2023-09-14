@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 
 // const stripe = require('stripe')('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');
-const stripe = require('stripe')('sk_test_tR3PYbcVNZZ796tH88S4VQ2u');
+const stripe = require('stripe')('sk_test_51MMu5kLt3bt57eoNf5hXuaIKsIjrIqGHkeEUNagFlQDm4p1LcxXOc9hkbDsjQVlyitl0UjzxwrYzAiz846KBeURE00tBwSYqxc');
 const axios = require("axios");
 
 app.use(function(req, res, next) {
