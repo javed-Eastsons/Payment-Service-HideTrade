@@ -195,8 +195,9 @@ const subscription_created = async (req) => {
             params.append('customer_id', cid);
             params.append('timestamp', endTimeStamp);
         
-            let url = "https://refuel.site/projects/hidetrade/APIs/UpdateProfile/UpdateProfileWithSubscription.php";
-        
+            // let url = "https://refuel.site/projects/hidetrade/APIs/UpdateProfile/UpdateProfileWithSubscription.php";
+        let url = "https://www.hidetrade.eu/app/api/UpdateProfile/UpdateProfileWithSubscription.php";
+
             axios.post(url, params).then((result) => {
                 console.log(result);
                 console.log(result.data);
