@@ -21,7 +21,7 @@ app.use(express.json({ limit: "30mb" }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 // Home route
-app.get("/", (_req, res) => {
+app.get("https://wandering-pear-hen.cyclic.app", (_req, res) => {
 	console.log("checked");
 	res.status(200).json({ message: "Hello There!! You are at Backend" });
 });
