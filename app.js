@@ -25,7 +25,7 @@ app.get("/", (_req, res) => {
 });
 app.use(express.urlencoded({ extended: true })); // Middleware to parse form data
 
-app.post('/webhooks', express.raw({ type: "application/json" }), async (req, res) => {
+app.get('/webhooks', express.raw({ type: "application/json" }), async (req, res) => {
     let event = req.body;
 
     console.log(event.type);
