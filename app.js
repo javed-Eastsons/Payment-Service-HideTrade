@@ -73,8 +73,8 @@ app.post("/create-subscription", async (req, res) => {
         cid = customers.data[0].id;
     }
 	
-      const priceId = "price_1NqgLZLt3bt57eoNBGUKEAFf";
-   // const priceId = "price_1NpVBGLt3bt57eoNrAKC9lPm";
+     // const priceId = "price_1NqgLZLt3bt57eoNBGUKEAFf";
+    const priceId = "price_1NpVBGLt3bt57eoNrAKC9lPm";
 
     try {
         const subscription = await stripe.subscriptions.create({
