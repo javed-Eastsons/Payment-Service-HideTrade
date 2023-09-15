@@ -54,7 +54,7 @@ app.post('/webhooks', express.raw({ type: "application/json" }), async (req, res
 });
 
 app.post("/create-subscription", async (req, res) => {
-    console.log(req.body,"WWWWWWWWWWWWWWWWWWWWWWWWWw);
+    console.log(req.body,"WWWWWWWWWWWWWWWWWWWWWWWWWw");
 
     const customers = await stripe.customers.list({
         email : req.body.email
