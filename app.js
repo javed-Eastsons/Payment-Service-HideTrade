@@ -188,7 +188,7 @@ const subscription_created = async (req) => {
 
         // update into the api
 
-        if (status === "active") {
+        if (status === "incomplete") {
             console.log("updating into database");
 
             const params = new URLSearchParams();
